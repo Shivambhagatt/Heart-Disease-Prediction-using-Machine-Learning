@@ -4,31 +4,39 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-# Load dataset
+# 📱 Page Config - Very important for layout
+st.set_page_config(
+    page_title="Heart Disease Predictor",
+    page_icon="❤️",
+    layout="wide",  # keeps layout same on laptop, better on mobile
+    initial_sidebar_state="auto"
+)
+
+# 🚀 Load dataset
 @st.cache_data
 def load_data():
     return pd.read_csv("heart.csv")
 
 df = load_data()
 
-# Preprocessing
+# ⚙️ Preprocessing
 X = df.drop("target", axis=1)
 y = df["target"]
 
-# Train model
+# 🧠 Train model
 model = LogisticRegression(max_iter=1000)
 model.fit(X, y)
 
-# Streamlit UI
+# 🎯 App Title
 st.markdown("""
-<h1 style='text-align: center; display: inline-flex; align-items: center; gap: 10px; justify-content: center;'>
-    <span style='font-size: 2.5rem;'>❤️</span>
-    <span style='color: #333;'>Heart Disease Prediction App</span>
-</h1>
+<h2 style='text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px;'>
+    ❤️ <span>Heart Disease Prediction App</span>
+</h2>
 """, unsafe_allow_html=True)
+
 st.write("Enter the patient details below:")
 
-# Input fields
+# 📝 Input fields
 age = st.number_input("Age", min_value=1, max_value=120, value=30)
 sex = st.selectbox("Sex", options=[0, 1], format_func=lambda x: "Female" if x == 0 else "Male")
 cp = st.selectbox("Chest Pain Type (cp)", options=[0, 1, 2, 3])
@@ -43,7 +51,7 @@ slope = st.selectbox("Slope", options=[0, 1, 2])
 ca = st.selectbox("Number of Major Vessels (ca)", options=[0, 1, 2, 3])
 thal = st.selectbox("Thal", options=[0, 1, 2, 3])
 
-# Predict button
+# 🧾 Predict button
 if st.button("Predict"):
     user_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg,
                            thalach, exang, oldpeak, slope, ca, thal]])
