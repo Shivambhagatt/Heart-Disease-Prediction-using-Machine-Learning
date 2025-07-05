@@ -1,47 +1,54 @@
 import streamlit as st
-import pandas as pd
+import pickle
 import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
 
-# Load dataset
-@st.cache_data
-def load_data():
-    return pd.read_csv("heart.csv")
+# Load model
+model = pickle.load(open('heart_disease_model.pkl', 'rb'))
 
-df = load_data()
+# Page title
+st.markdown("<h1 style='text-align: center; color: #333;'>💓 Heart Disease Prediction App</h1>", unsafe_allow_html=True)
+st.markdown("#### Enter the patient details below:")
 
-# Preprocessing
-X = df.drop("target", axis=1)
-y = df["target"]
+# Optional CSS
+st.markdown("""
+    <style>
+        .stNumberInput input, .stSelectbox div {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-# Train model
-model = LogisticRegression(max_iter=1000)
-model.fit(X, y)
+# User Inputs in 2 columns
+col1, col2 = st.columns(2)
 
-# Streamlit UI
-st.title("🫀 Heart Disease Prediction App")
-st.write("Enter the patient details below:")
+with col1:
+    age = st.number_input("Age", 1, 120, 30)
+    sex = st.selectbox("Sex", ['Male', 'Female'])
+    cp = st.selectbox("Chest Pain Type (cp)", [0, 1, 2, 3])
+    fbs = st.selectbox("Fasting Blood Sugar > 120 mg/dl (fbs)", [0, 1])
+    restecg = st.selectbox("Resting ECG (restecg)", [0, 1, 2])
+    exang = st.selectbox("Exercise Induced Angina (exang)", [0, 1])
 
-# Input fields
-age = st.number_input("Age", min_value=1, max_value=120, value=30)
-sex = st.selectbox("Sex", options=[0, 1], format_func=lambda x: "Female" if x == 0 else "Male")
-cp = st.selectbox("Chest Pain Type (cp)", options=[0, 1, 2, 3])
-trestbps = st.number_input("Resting Blood Pressure (trestbps)", value=120)
-chol = st.number_input("Cholesterol (chol)", value=200)
-fbs = st.selectbox("Fasting Blood Sugar > 120 (fbs)", options=[0, 1])
-restecg = st.selectbox("Rest ECG (restecg)", options=[0, 1, 2])
-thalach = st.number_input("Max Heart Rate (thalach)", value=150)
-exang = st.selectbox("Exercise Induced Angina (exang)", options=[0, 1])
-oldpeak = st.number_input("Oldpeak", value=1.0)
-slope = st.selectbox("Slope", options=[0, 1, 2])
-ca = st.selectbox("Number of Major Vessels (ca)", options=[0, 1, 2, 3])
-thal = st.selectbox("Thal", options=[0, 1, 2, 3])
+with col2:
+    trestbps = st.number_input("Resting Blood Pressure (trestbps)", 80, 200, 120)
+    chol = st.number_input("Cholesterol (chol)", 100, 400, 200)
+    thalach = st.number_input("Max Heart Rate (thalach)", 60, 210, 150)
+    oldpeak = st.number_input("Oldpeak", 0.0, 6.0, 1.0)
+    slope = st.selectbox("Slope", [0, 1, 2])
+    ca = st.selectbox("Number of Major Vessels (ca)", [0, 1, 2, 3])
+    thal = st.selectbox("Thalassemia (thal)", [0, 1, 2, 3])
 
-# Predict button
+# Preprocess input
+sex = 1 if sex == 'Male' else 0
+
+features = np.array([[age, sex, cp, trestbps, chol, fbs, restecg,
+                      thalach, exang, oldpeak, slope, ca, thal]])
+
+# Predict
 if st.button("Predict"):
-    user_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg,
-                           thalach, exang, oldpeak, slope, ca, thal]])
-    prediction = model.predict(user_data)
-    result = "🟢 No Heart Disease" if prediction[0] == 0 else "🔴 Heart Disease Detected"
-    st.success(result)
+    prediction = model.predict(features)
+    if prediction[0] == 1:
+        st.error("🚨 High risk of Heart Disease!")
+    else:
+        st.success("✅ Low risk of Heart Disease.")
