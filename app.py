@@ -8,17 +8,39 @@ from sklearn.model_selection import train_test_split
 st.set_page_config(
     page_title="Heart Disease Predictor",
     page_icon="❤️",
-    layout="wide",  # Keeps laptop layout wide, mobile friendly
+    layout="wide",  # ✅ Keep wide layout for laptop
     initial_sidebar_state="auto"
 )
 
-# 🧠 App Title (responsive on all devices)
+# ✅ Mobile-only styling (responsive CSS)
+st.markdown("""
+    <style>
+    @media screen and (max-width: 768px) {
+        .stNumberInput, .stSelectbox, .stTextInput, .stButton {
+            width: 100% !important;
+            margin-bottom: 14px;
+        }
+        .element-container h1, .element-container div[style*="font-size: 1.6rem"] {
+            text-align: center !important;
+            font-size: 1.4rem !important;
+        }
+        .stButton>button {
+            background-color: #FF4B4B;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px;
+            width: 100%;
+        }
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# 🧠 App Title
 st.markdown("""
 <div style='text-align: center; font-size: 1.6rem; font-weight: bold;'>
     ❤️ Heart Disease Prediction App
 </div>
 """, unsafe_allow_html=True)
-
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.write("Enter the patient details below:")
