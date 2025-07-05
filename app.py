@@ -4,37 +4,38 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-# 📱 Page Config - Very important for layout
+# 📱 Page Configuration
 st.set_page_config(
     page_title="Heart Disease Predictor",
     page_icon="❤️",
-    layout="wide",  # keeps layout same on laptop, better on mobile
+    layout="wide",  # Keeps laptop layout wide, mobile friendly
     initial_sidebar_state="auto"
 )
 
-# 🚀 Load dataset
+# 🧠 App Title (responsive on all devices)
+st.markdown("""
+<div style='text-align: center; font-size: 1.6rem; font-weight: bold;'>
+    ❤️ Heart Disease Prediction App
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.write("Enter the patient details below:")
+
+# 📥 Load dataset
 @st.cache_data
 def load_data():
     return pd.read_csv("heart.csv")
 
 df = load_data()
 
-# ⚙️ Preprocessing
+# 🔧 Preprocessing
 X = df.drop("target", axis=1)
 y = df["target"]
 
-# 🧠 Train model
+# 📈 Model training
 model = LogisticRegression(max_iter=1000)
 model.fit(X, y)
-
-# 🎯 App Title
-st.markdown("""
-<h2 style='text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px;'>
-    ❤️ <span>Heart Disease Prediction App</span>
-</h2>
-""", unsafe_allow_html=True)
-
-st.write("Enter the patient details below:")
 
 # 📝 Input fields
 age = st.number_input("Age", min_value=1, max_value=120, value=30)
@@ -51,7 +52,7 @@ slope = st.selectbox("Slope", options=[0, 1, 2])
 ca = st.selectbox("Number of Major Vessels (ca)", options=[0, 1, 2, 3])
 thal = st.selectbox("Thal", options=[0, 1, 2, 3])
 
-# 🧾 Predict button
+# 🔍 Prediction
 if st.button("Predict"):
     user_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg,
                            thalach, exang, oldpeak, slope, ca, thal]])
