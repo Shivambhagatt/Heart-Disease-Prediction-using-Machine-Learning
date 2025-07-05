@@ -20,7 +20,10 @@ model = LogisticRegression(max_iter=1000)
 model.fit(X, y)
 
 # Streamlit UI
-st.markdown("<h1 style='text-align: center; color: #333;'>💓 Heart Disease Prediction App</h1>", unsafe_allow_html=True)
+st.markdown(
+    "<h1 style='text-align: center; color: #333;'>❤️&nbsp;Heart Disease Prediction App</h1>",
+    unsafe_allow_html=True
+)
 st.write("Enter the patient details below:")
 
 # Input fields
